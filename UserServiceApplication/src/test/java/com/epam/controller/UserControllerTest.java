@@ -14,6 +14,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
@@ -110,6 +111,26 @@ class UserControllerTest {
 
 		when(userService.fetchAllUsers()).thenReturn(users);
 		mockMvc.perform(get("/users")).andExpect(status().isOk()).andReturn();
+	}
+	
+//	@Test
+//	void updateUserTest() throws Exception {
+//		when(userService.updateUser("user",userDto)).thenReturn(true);
+//		MvcResult result = mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
+//				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
+//				.andExpect(status().isNotFound()).andReturn();
+//		String response = result.getResponse().getContentAsString();
+//		assertEquals("Book Updated Successfully", response);
+//	}
+
+	@Test
+	void updateUserErrorTest() throws Exception {
+		when(userService.updateUser("user",userDto)).thenReturn(false);
+		MvcResult result = mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andReturn();
+		String response = result.getResponse().getContentAsString();
+		assertEquals("User Updation Unsuccessful", response);
 	}
 	
 }

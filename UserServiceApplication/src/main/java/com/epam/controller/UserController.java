@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,6 +65,20 @@ public class UserController {
 			statusCode = HttpStatus.ACCEPTED;
 		} else {
 			status = "User Deletion Unsuccessful";
+			statusCode = HttpStatus.NOT_FOUND;
+		}
+		return new ResponseEntity<>(status, statusCode);
+	}
+	
+	@PutMapping("/{username}")
+	public ResponseEntity<String> updateUser(@PathVariable String username,@RequestBody UserDto userDto) throws UserNotFoundException{
+		String status = "";
+		HttpStatus statusCode = null;
+		if (userService.updateUser(username,userDto)) {
+			status = "User Updated Successfully";
+			statusCode = HttpStatus.ACCEPTED;
+		} else {
+			status = "User Updation Unsuccessful";
 			statusCode = HttpStatus.NOT_FOUND;
 		}
 		return new ResponseEntity<>(status, statusCode);

@@ -67,4 +67,19 @@ public class UserService {
 		}
 		return status;
 	}
+
+	public boolean updateUser(String username, UserDto userDto) {
+		boolean status = false;
+		Optional<User> user = userRepository.findById(username);
+		if(user.isPresent()) {
+			user.get().setName(userDto.getName());
+			user.get().setEmail(userDto.getEmail());
+			userRepository.save(user.get());
+			status = true;
+		}
+		else {
+			throw new UserNotFoundException("User Not Found");
+		}
+		return status;
+	}
 }

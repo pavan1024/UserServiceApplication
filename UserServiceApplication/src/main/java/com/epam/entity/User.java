@@ -18,6 +18,9 @@ public class User {
 	@Column(name="EMAIL",unique=true)
 	String email;
 	
+	@Column(name="NAME")
+	String name;
+	
 	
 	
 }

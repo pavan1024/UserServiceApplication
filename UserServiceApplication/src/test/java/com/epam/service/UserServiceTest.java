@@ -118,4 +118,19 @@ class UserServiceTest {
 		Throwable exception = assertThrows(NoUsersException.class, () -> userService.fetchAllUsers());
 		assertEquals("No Users", exception.getMessage());
 	}
+	
+	@Test
+	void updatebookTest() {
+		Optional<User> optionalBook = Optional.ofNullable(user);
+		when(userRepository.findById("user")).thenReturn(optionalBook);
+		assertTrue(userService.updateUser("user",userDto));
+	}
+	
+	@Test
+	void updatebookErrorTest() {
+		Throwable exception = assertThrows(UserNotFoundException.class, () -> userService.updateUser("user",userDto));
+		assertEquals("User Not Found", exception.getMessage());
+	}
+	
+	
 }
