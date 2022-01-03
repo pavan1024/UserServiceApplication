@@ -40,42 +40,69 @@ public class UserService {
 		return retrivedUser;
 	}
 
-	public boolean addUser(UserDto userDto) throws UserAlreadyExistsException {
-		boolean status = false;
-		Optional<User> optionalUser = userRepository.findById(userDto.getUsername());
+	public UserDto addUser(UserDto userDto) throws UserAlreadyExistsException {
+//		boolean status = false;
+//		Optional<User> optionalUser = userRepository.findById(userDto.getUsername());
+//		User user = mapper.map(userDto, User.class);
+//		if (!optionalUser.isPresent()) {
+//			userRepository.save(user);
+//			status = true;
+//		} else {
+//			throw new UserAlreadyExistsException("User Already Exists");
+//		}
+//		return status;
+		
+		UserDto userDto1 = null;
 		User user = mapper.map(userDto, User.class);
-		if (!optionalUser.isPresent()) {
+		Optional<User> user1= userRepository.findById(userDto.getUsername());
+		if(!user1.isPresent()) {
 			userRepository.save(user);
-			status = true;
-		} else {
+			userDto1 = mapper.map(user, UserDto.class);
+		}
+		else {
 			throw new UserAlreadyExistsException("User Already Exists");
 		}
-		return status;
+		return userDto1;
 	}
 
-	public boolean deleteUser(String username) throws UserNotFoundException {
-		boolean status = false;
-		Optional<User> user = userRepository.findById(username);
-		if (user.isPresent()) {
-			userRepository.delete(user.get());
-			status = true;
-		} else {
-			throw new UserNotFoundException("User Not Found");
+	public String deleteUser(String username) throws UserNotFoundException {
+//		boolean status = false;
+//		Optional<User> user = userRepository.findById(username);
+//		if (user.isPresent()) {
+//			userRepository.delete(user.get());
+//			status = true;
+//		} else {
+//			throw new UserNotFoundException("User Not Found");
+//		}
+//		return status;
+		String status = "";
+		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+		if (user != null) {
+			userRepository.delete(user);
+			status = "User Deleted Successfully";
 		}
 		return status;
 	}
 
-	public boolean updateUser(String username, UserDto userDto) {
-		boolean status = false;
-		Optional<User> user = userRepository.findById(username);
-		if (user.isPresent()) {
-			user.get().setName(userDto.getName());
-			user.get().setEmail(userDto.getEmail());
-			userRepository.save(user.get());
-			status = true;
-		} else {
-			throw new UserNotFoundException("User Not Found");
-		}
-		return status;
+	public UserDto updateUser(String username, UserDto userDto) {
+//		boolean status = false;
+//		Optional<User> user = userRepository.findById(username);
+//		if (user.isPresent()) {
+//			user.get().setName(userDto.getName());
+//			user.get().setEmail(userDto.getEmail());
+//			userRepository.save(user.get());
+//			status = true;
+//		} else {
+//			throw new UserNotFoundException("User Not Found");
+//		}
+//		return status;
+		
+		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+		user.setName(userDto.getName());
+		user.setEmail(userDto.getEmail());
+		userRepository.save(user);
+		UserDto userDto1  = mapper.map(user, UserDto.class);
+		return userDto1;
+		
 	}
 }

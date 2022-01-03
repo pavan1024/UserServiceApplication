@@ -29,78 +29,53 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(UserController.class)
 class UserControllerTest {
-	
+
 	@Autowired
 	private MockMvc mockMvc;
 	@MockBean
 	UserService userService;
-	
+
 	ObjectMapper mapper;
 	UserDto userDto;
-	
+
 	@BeforeEach
 	void setUp() {
 		mapper = new ObjectMapper();
-		userDto =new UserDto();
+		userDto = new UserDto();
 		userDto.setUsername("username");
 		userDto.setEmail("email123@gmail.com");
-		
+
 	}
-	
+
 	@Test
-	void addUserTest() throws Exception {		
-		when(userService.addUser(any())).thenReturn(true);
-		MvcResult result = mockMvc
-				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isAccepted()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		assertEquals("User Added Successfully", response);
-		
+	void addUserTest() throws Exception {
+		when(userService.addUser(any())).thenReturn(userDto);
+		mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andReturn();
+
 	}
-	
-	@Test
-	void addUserErrorTest() throws Exception {
-		when(userService.addUser(any())).thenReturn(false);
-		MvcResult result = mockMvc
-				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
-						.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		assertEquals("User Addition Unsuccessful", response);
-	}
-	
+
 	@Test
 	void deleteUserTest() throws Exception {
-		when(userService.deleteUser("username")).thenReturn(true);
-		MvcResult result = mockMvc.perform(delete("/users/username"))
-				.andExpect(status().isAccepted()).andReturn();
+		when(userService.deleteUser("username")).thenReturn("User Deleted Successfully");
+		MvcResult result = mockMvc.perform(delete("/users/username")).andExpect(status().isNoContent()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		assertEquals("User Deleted Successfully", response);
 	}
 
-	@Test
-	void deleteUserErrorTest() throws Exception {
-		when(userService.deleteUser("username")).thenReturn(false);
-		MvcResult result = mockMvc.perform(delete("/users/username"))
-				.andExpect(status().isNotFound()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		assertEquals("User Deletion Unsuccessful", response);
-	}
-	
 	@Test
 	void getUserTest() throws Exception {
 		User user = new User();
 		user.setUsername("username");
 		when(userService.getUser("username")).thenReturn(user);
 
-		MvcResult result = mockMvc.perform(get("/users/username"))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/users/username")).andExpect(status().isOk()).andReturn();
 		int statusCode = result.getResponse().getStatus();
-				
+
 		assertEquals(200, statusCode);
 	}
-	
+
 	@Test
 	void fetchAllUsersTest() throws Exception {
 		List<User> users = new ArrayList<>();
@@ -112,25 +87,13 @@ class UserControllerTest {
 		when(userService.fetchAllUsers()).thenReturn(users);
 		mockMvc.perform(get("/users")).andExpect(status().isOk()).andReturn();
 	}
-	
-//	@Test
-//	void updateUserTest() throws Exception {
-//		when(userService.updateUser("user",userDto)).thenReturn(true);
-//		MvcResult result = mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
-//				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-//				.andExpect(status().isNotFound()).andReturn();
-//		String response = result.getResponse().getContentAsString();
-//		assertEquals("Book Updated Successfully", response);
-//	}
 
 	@Test
-	void updateUserErrorTest() throws Exception {
-		when(userService.updateUser("user",userDto)).thenReturn(false);
-		MvcResult result = mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
+	void updateUserTest() throws Exception {
+		when(userService.updateUser("user",userDto)).thenReturn(userDto);
+		mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		assertEquals("User Updation Unsuccessful", response);
+				.andExpect(status().isAccepted()).andReturn();
 	}
-	
+
 }

@@ -28,61 +28,29 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() throws NoUsersException {
+	public ResponseEntity<List<User>> getAllBooks() throws NoUsersException {
 		return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}")
-	public ResponseEntity<User> getUser(@PathVariable String username) throws UserNotFoundException {
-		User user = null;
-		HttpStatus statusCode = null;
-		if (userService.getUser(username) != null) {
-			user = userService.getUser(username);
-			statusCode = HttpStatus.OK;
-		}
-		return new ResponseEntity<>(user, statusCode);
+	public ResponseEntity<User> getBook(@PathVariable String username) throws UserNotFoundException {
+		return new ResponseEntity<>(userService.getUser(username), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<String> addUser(@RequestBody UserDto userDto) throws UserAlreadyExistsException {
-		String status = "";
-		HttpStatus statusCode = null;
-		if (userService.addUser(userDto)) {
-			status = "User Added Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "User Addition Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+	public ResponseEntity<UserDto> addBook(@RequestBody UserDto userDto) throws UserAlreadyExistsException {
+		return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{username}")
-	public ResponseEntity<String> deleteUser(@PathVariable String username) throws UserNotFoundException {
-		String status = "";
-		HttpStatus statusCode = null;
-		if (userService.deleteUser(username)) {
-			status = "User Deleted Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "User Deletion Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+	public ResponseEntity<String> deleteBook(@PathVariable String username) throws UserNotFoundException {
+		return new ResponseEntity<>(userService.deleteUser(username), HttpStatus.NO_CONTENT);
 	}
 
 	@PutMapping("/{username}")
-	public ResponseEntity<String> updateUser(@PathVariable String username, @RequestBody UserDto userDto)
+	public ResponseEntity<UserDto> updateBook(@PathVariable String username, @RequestBody UserDto userDto)
 			throws UserNotFoundException {
-		String status = "";
-		HttpStatus statusCode = null;
-		if (userService.updateUser(username, userDto)) {
-			status = "User Updated Successfully";
-			statusCode = HttpStatus.ACCEPTED;
-		} else {
-			status = "User Updation Unsuccessful";
-			statusCode = HttpStatus.NOT_FOUND;
-		}
-		return new ResponseEntity<>(status, statusCode);
+		return new ResponseEntity<>(userService.updateUser(username, userDto), HttpStatus.ACCEPTED);
 	}
+
 }
