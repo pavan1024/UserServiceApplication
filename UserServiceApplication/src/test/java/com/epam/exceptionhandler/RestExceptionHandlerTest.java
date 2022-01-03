@@ -1,6 +1,7 @@
 package com.epam.exceptionhandler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,12 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import com.epam.dto.UserDto;
 
 import com.epam.entity.User;
 import com.epam.exception.NoUsersException;
+import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 import com.epam.repo.UserRepository;
 import com.epam.service.UserService;
@@ -81,6 +84,17 @@ class RestExceptionHandlerTest {
 		String response = result.getResponse().getContentAsString();
 		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("No Users",data.get("error"));
+	}
+	
+	@Test
+	void handlerUserAlreadyExistsExceptionTest() throws Exception {
+		when(userService.addUser(any())).thenThrow(new UserAlreadyExistsException("User Already Exists"));
+		MvcResult result = mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andReturn();
+		String response = result.getResponse().getContentAsString();
+		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("User Already Exists",data.get("error"));
 	}
 	
 	
