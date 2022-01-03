@@ -20,6 +20,8 @@ public class UserService {
 	UserRepository userRepository;
 	@Autowired
 	ModelMapper mapper;
+	
+	String userNotFound = "User Not Found";
 
 	public List<User> fetchAllUsers() throws NoUsersException {
 		List<User> books = (List<User>) userRepository.findAll();
@@ -35,23 +37,12 @@ public class UserService {
 		if (user.isPresent()) {
 			retrivedUser = user.get();
 		} else {
-			throw new UserNotFoundException("User Not Found");
+			throw new UserNotFoundException(userNotFound);
 		}
 		return retrivedUser;
 	}
 
 	public UserDto addUser(UserDto userDto) throws UserAlreadyExistsException {
-//		boolean status = false;
-//		Optional<User> optionalUser = userRepository.findById(userDto.getUsername());
-//		User user = mapper.map(userDto, User.class);
-//		if (!optionalUser.isPresent()) {
-//			userRepository.save(user);
-//			status = true;
-//		} else {
-//			throw new UserAlreadyExistsException("User Already Exists");
-//		}
-//		return status;
-		
 		UserDto userDto1 = null;
 		User user = mapper.map(userDto, User.class);
 		Optional<User> user1= userRepository.findById(userDto.getUsername());
@@ -66,17 +57,8 @@ public class UserService {
 	}
 
 	public String deleteUser(String username) throws UserNotFoundException {
-//		boolean status = false;
-//		Optional<User> user = userRepository.findById(username);
-//		if (user.isPresent()) {
-//			userRepository.delete(user.get());
-//			status = true;
-//		} else {
-//			throw new UserNotFoundException("User Not Found");
-//		}
-//		return status;
 		String status = "";
-		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(userNotFound));
 		if (user != null) {
 			userRepository.delete(user);
 			status = "User Deleted Successfully";
@@ -84,25 +66,12 @@ public class UserService {
 		return status;
 	}
 
-	public UserDto updateUser(String username, UserDto userDto) {
-//		boolean status = false;
-//		Optional<User> user = userRepository.findById(username);
-//		if (user.isPresent()) {
-//			user.get().setName(userDto.getName());
-//			user.get().setEmail(userDto.getEmail());
-//			userRepository.save(user.get());
-//			status = true;
-//		} else {
-//			throw new UserNotFoundException("User Not Found");
-//		}
-//		return status;
-		
-		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+	public UserDto updateUser(String username, UserDto userDto) {		
+		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(userNotFound));
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
 		userRepository.save(user);
-		UserDto userDto1  = mapper.map(user, UserDto.class);
-		return userDto1;
+		return mapper.map(user, UserDto.class);
 		
 	}
 }
