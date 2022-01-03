@@ -20,49 +20,46 @@ public class UserService {
 	UserRepository userRepository;
 	@Autowired
 	ModelMapper mapper;
-	
+
 	public List<User> fetchAllUsers() throws NoUsersException {
 		List<User> books = (List<User>) userRepository.findAll();
-		if(books.isEmpty()) {
+		if (books.isEmpty()) {
 			throw new NoUsersException("No Users");
 		}
 		return books;
 	}
-	
-	public User getUser(String username) throws UserNotFoundException{
+
+	public User getUser(String username) throws UserNotFoundException {
 		User retrivedUser = null;
 		Optional<User> user = userRepository.findById(username);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			retrivedUser = user.get();
-		}
-		else {
+		} else {
 			throw new UserNotFoundException("User Not Found");
 		}
 		return retrivedUser;
 	}
-	
-	public boolean addUser(UserDto userDto) throws UserAlreadyExistsException{
+
+	public boolean addUser(UserDto userDto) throws UserAlreadyExistsException {
 		boolean status = false;
 		Optional<User> optionalUser = userRepository.findById(userDto.getUsername());
 		User user = mapper.map(userDto, User.class);
-		if(!optionalUser.isPresent()) {
+		if (!optionalUser.isPresent()) {
 			userRepository.save(user);
 			status = true;
-		}
-		else {
+		} else {
 			throw new UserAlreadyExistsException("User Already Exists");
 		}
 		return status;
 	}
-	
+
 	public boolean deleteUser(String username) throws UserNotFoundException {
 		boolean status = false;
 		Optional<User> user = userRepository.findById(username);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			userRepository.delete(user.get());
 			status = true;
-		}
-		else {
+		} else {
 			throw new UserNotFoundException("User Not Found");
 		}
 		return status;
@@ -71,13 +68,12 @@ public class UserService {
 	public boolean updateUser(String username, UserDto userDto) {
 		boolean status = false;
 		Optional<User> user = userRepository.findById(username);
-		if(user.isPresent()) {
+		if (user.isPresent()) {
 			user.get().setName(userDto.getName());
 			user.get().setEmail(userDto.getEmail());
 			userRepository.save(user.get());
 			status = true;
-		}
-		else {
+		} else {
 			throw new UserNotFoundException("User Not Found");
 		}
 		return status;

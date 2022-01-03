@@ -12,7 +12,6 @@ import com.epam.exception.NoUsersException;
 import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 
-
 @RestControllerAdvice
 public class RestExceptionHandler {
 	String userService = "userService";
@@ -20,7 +19,7 @@ public class RestExceptionHandler {
 	String timestamp = "timestamp";
 	String error = "error";
 	String status = "status";
-	
+
 	@ExceptionHandler(value = UserNotFoundException.class)
 	public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
 		Map<String, String> response = new HashMap<>();
@@ -40,7 +39,7 @@ public class RestExceptionHandler {
 		response.put(status, HttpStatus.NOT_FOUND.name());
 		return response;
 	}
-	
+
 	@ExceptionHandler(value = NoUsersException.class)
 	public Map<String, String> handleNoUsersException(NoUsersException ex) {
 		Map<String, String> response = new HashMap<>();

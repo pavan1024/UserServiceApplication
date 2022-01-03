@@ -48,7 +48,7 @@ class UserControllerTest {
 	}
 	
 	@Test
-	void addBookTest() throws Exception {		
+	void addUserTest() throws Exception {		
 		when(userService.addUser(any())).thenReturn(true);
 		MvcResult result = mockMvc
 				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +60,7 @@ class UserControllerTest {
 	}
 	
 	@Test
-	void addBookErrorTest() throws Exception {
+	void addUserErrorTest() throws Exception {
 		when(userService.addUser(any())).thenReturn(false);
 		MvcResult result = mockMvc
 				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
@@ -71,7 +71,7 @@ class UserControllerTest {
 	}
 	
 	@Test
-	void deleteBookTest() throws Exception {
+	void deleteUserTest() throws Exception {
 		when(userService.deleteUser("username")).thenReturn(true);
 		MvcResult result = mockMvc.perform(delete("/users/username"))
 				.andExpect(status().isAccepted()).andReturn();
@@ -80,7 +80,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	void deleteBookErrorTest() throws Exception {
+	void deleteUserErrorTest() throws Exception {
 		when(userService.deleteUser("username")).thenReturn(false);
 		MvcResult result = mockMvc.perform(delete("/users/username"))
 				.andExpect(status().isNotFound()).andReturn();
@@ -89,7 +89,7 @@ class UserControllerTest {
 	}
 	
 	@Test
-	void getBookTest() throws Exception {
+	void getUserTest() throws Exception {
 		User user = new User();
 		user.setUsername("username");
 		when(userService.getUser("username")).thenReturn(user);
@@ -102,7 +102,7 @@ class UserControllerTest {
 	}
 	
 	@Test
-	void fetchAllBooksTest() throws Exception {
+	void fetchAllUsersTest() throws Exception {
 		List<User> users = new ArrayList<>();
 		User user = new User();
 		userDto.setUsername("username");
