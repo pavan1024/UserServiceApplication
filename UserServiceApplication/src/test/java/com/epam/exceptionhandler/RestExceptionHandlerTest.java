@@ -30,72 +30,69 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 @AutoConfigureMockMvc
 @SpringBootTest
 class RestExceptionHandlerTest {
 	@Autowired
 	private MockMvc mockMvc;
-	
+
 	@Autowired
 	ObjectMapper mapper;
-	
+
 	@MockBean
 	UserService userService;
-	
+
 	@MockBean
 	UserRepository userRepository;
-	
-	
+
 	UserDto userDto;
 	User user;
-	
-	protected <T> T mapFromJson(String json, Class<T> clazz) throws JsonParseException,JsonMappingException, IOException {
+
+	protected <T> T mapFromJson(String json, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readValue(json, clazz);
 	}
-	
+
 	@BeforeEach
 	void setUp() {
 		userDto = new UserDto();
 		userDto.setUsername("username");
 		userDto.setEmail("email123@gmail.com");
-		
+
 		user = new User();
 		userDto.setUsername("username1");
 		userDto.setEmail("email321@gmail.com");
 	}
-	
+
 	@Test
 	void handlerUserNotFoundExceptionTest() throws Exception {
 		when(userService.getUser("username")).thenThrow(new UserNotFoundException("User Not Found"));
-		MvcResult result = mockMvc.perform(get("/users/username"))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/users/username")).andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("User Not Found",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("User Not Found", data.get("error"));
 	}
-	
+
 	@Test
 	void handlerNoUsersExceptionTest() throws Exception {
 		when(userService.fetchAllUsers()).thenThrow(new NoUsersException("No Users"));
-		MvcResult result = mockMvc.perform(get("/users/"))
-				.andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/users/")).andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("No Users",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("No Users", data.get("error"));
 	}
-	
+
 	@Test
 	void handlerUserAlreadyExistsExceptionTest() throws Exception {
 		when(userService.addUser(any())).thenThrow(new UserAlreadyExistsException("User Already Exists"));
-		MvcResult result = mockMvc.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
+		MvcResult result = mockMvc
+				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
+						.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andReturn();
 		String response = result.getResponse().getContentAsString();
-		HashMap<String ,String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("User Already Exists",data.get("error"));
+		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
+		assertEquals("User Already Exists", data.get("error"));
 	}
-	
-	
+
 }

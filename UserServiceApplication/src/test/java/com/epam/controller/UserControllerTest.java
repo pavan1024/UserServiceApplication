@@ -90,7 +90,7 @@ class UserControllerTest {
 
 	@Test
 	void updateUserTest() throws Exception {
-		when(userService.updateUser("user",userDto)).thenReturn(userDto);
+		when(userService.updateUser("user", userDto)).thenReturn(userDto);
 		mockMvc.perform(put("/users/user").contentType(MediaType.APPLICATION_JSON)
 				.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isAccepted()).andReturn();

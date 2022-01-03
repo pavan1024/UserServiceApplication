@@ -20,7 +20,7 @@ public class UserService {
 	UserRepository userRepository;
 	@Autowired
 	ModelMapper mapper;
-	
+
 	String userNotFound = "User Not Found";
 
 	public List<User> fetchAllUsers() throws NoUsersException {
@@ -45,12 +45,11 @@ public class UserService {
 	public UserDto addUser(UserDto userDto) throws UserAlreadyExistsException {
 		UserDto userDto1 = null;
 		User user = mapper.map(userDto, User.class);
-		Optional<User> user1= userRepository.findById(userDto.getUsername());
-		if(!user1.isPresent()) {
+		Optional<User> user1 = userRepository.findById(userDto.getUsername());
+		if (!user1.isPresent()) {
 			userRepository.save(user);
 			userDto1 = mapper.map(user, UserDto.class);
-		}
-		else {
+		} else {
 			throw new UserAlreadyExistsException("User Already Exists");
 		}
 		return userDto1;
@@ -66,12 +65,12 @@ public class UserService {
 		return status;
 	}
 
-	public UserDto updateUser(String username, UserDto userDto) {		
+	public UserDto updateUser(String username, UserDto userDto) {
 		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(userNotFound));
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
 		userRepository.save(user);
 		return mapper.map(user, UserDto.class);
-		
+
 	}
 }
