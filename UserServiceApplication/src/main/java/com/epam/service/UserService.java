@@ -32,36 +32,26 @@ public class UserService {
 	}
 
 	public User getUser(String username) throws UserNotFoundException {
-		User retrivedUser = null;
-		Optional<User> user = userRepository.findById(username);
-		if (user.isPresent()) {
-			retrivedUser = user.get();
-		} else {
-			throw new UserNotFoundException(userNotFound);
-		}
-		return retrivedUser;
+		return userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(userNotFound));
 	}
 
 	public UserDto addUser(UserDto userDto) throws UserAlreadyExistsException {
-		UserDto userDto1 = null;
+		UserDto retrievedUserDto = null;
 		User user = mapper.map(userDto, User.class);
-		Optional<User> user1 = userRepository.findById(userDto.getUsername());
-		if (!user1.isPresent()) {
+		Optional<User> retrievedUser = userRepository.findById(userDto.getUsername());
+		if (!retrievedUser.isPresent()) {
 			userRepository.save(user);
-			userDto1 = mapper.map(user, UserDto.class);
+			retrievedUserDto = mapper.map(user, UserDto.class);
 		} else {
 			throw new UserAlreadyExistsException("User Already Exists");
 		}
-		return userDto1;
+		return retrievedUserDto;
 	}
 
 	public String deleteUser(String username) throws UserNotFoundException {
-		String status = "";
 		User user = userRepository.findById(username).orElseThrow(() -> new UserNotFoundException(userNotFound));
-		if (user != null) {
-			userRepository.delete(user);
-			status = "User Deleted Successfully";
-		}
+		userRepository.delete(user);
+		String status = "User Deleted Successfully";
 		return status;
 	}
 
