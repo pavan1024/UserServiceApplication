@@ -68,7 +68,7 @@ class RestExceptionHandlerTest {
 	@Test
 	void handlerUserNotFoundExceptionTest() throws Exception {
 		when(userService.getUser("username")).thenThrow(new UserNotFoundException("User Not Found"));
-		MvcResult result = mockMvc.perform(get("/users/username")).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/users/username")).andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("User Not Found", data.get("error"));
@@ -77,7 +77,7 @@ class RestExceptionHandlerTest {
 	@Test
 	void handlerNoUsersExceptionTest() throws Exception {
 		when(userService.fetchAllUsers()).thenThrow(new NoUsersException("No Users"));
-		MvcResult result = mockMvc.perform(get("/users/")).andExpect(status().isOk()).andReturn();
+		MvcResult result = mockMvc.perform(get("/users/")).andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("No Users", data.get("error"));
@@ -89,7 +89,7 @@ class RestExceptionHandlerTest {
 		MvcResult result = mockMvc
 				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andReturn();
+				.andExpect(status().isConflict()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("User Already Exists", data.get("error"));
