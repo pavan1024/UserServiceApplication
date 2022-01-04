@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,32 +22,32 @@ public class RestExceptionHandler {
 	String status = "status";
 
 	@ExceptionHandler(value = UserNotFoundException.class)
-	public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
+	public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(userService, users);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = UserAlreadyExistsException.class)
-	public Map<String, String> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+	public ResponseEntity<Map<String, String>> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(userService, users);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.CONFLICT.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.CONFLICT);
 	}
 
 	@ExceptionHandler(value = NoUsersException.class)
-	public Map<String, String> handleNoUsersException(NoUsersException ex) {
+	public  ResponseEntity<Map<String, String>> handleNoUsersException(NoUsersException ex) {
 		Map<String, String> response = new HashMap<>();
 		response.put(userService, users);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return response;
+		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
 	}
 }
