@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import com.epam.dto.UserDto;
 
 import com.epam.entity.User;
-import com.epam.exception.NoUsersException;
 import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 import com.epam.repo.UserRepository;
@@ -75,21 +74,12 @@ class RestExceptionHandlerTest {
 	}
 
 	@Test
-	void handlerNoUsersExceptionTest() throws Exception {
-		when(userService.fetchAllUsers()).thenThrow(new NoUsersException("No Users"));
-		MvcResult result = mockMvc.perform(get("/users/")).andExpect(status().isNotFound()).andReturn();
-		String response = result.getResponse().getContentAsString();
-		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
-		assertEquals("No Users", data.get("error"));
-	}
-
-	@Test
 	void handlerUserAlreadyExistsExceptionTest() throws Exception {
 		when(userService.addUser(any())).thenThrow(new UserAlreadyExistsException("User Already Exists"));
 		MvcResult result = mockMvc
 				.perform(post("/users/").contentType(MediaType.APPLICATION_JSON)
 						.content(mapper.writeValueAsString(userDto)).accept(MediaType.APPLICATION_JSON))
-				.andExpect(status().isConflict()).andReturn();
+				.andExpect(status().isNotFound()).andReturn();
 		String response = result.getResponse().getContentAsString();
 		HashMap<String, String> data = this.mapFromJson(response, HashMap.class);
 		assertEquals("User Already Exists", data.get("error"));

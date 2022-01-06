@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.epam.exception.NoUsersException;
 import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 
@@ -28,7 +27,7 @@ public class RestExceptionHandler {
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(value = UserAlreadyExistsException.class)
@@ -37,17 +36,7 @@ public class RestExceptionHandler {
 		response.put(userService, users);
 		response.put(timestamp, new Date().toString());
 		response.put(error, ex.getMessage());
-		response.put(status, HttpStatus.CONFLICT.name());
-		return new ResponseEntity<>(response,HttpStatus.CONFLICT);
-	}
-
-	@ExceptionHandler(value = NoUsersException.class)
-	public  ResponseEntity<Map<String, String>> handleNoUsersException(NoUsersException ex) {
-		Map<String, String> response = new HashMap<>();
-		response.put(userService, users);
-		response.put(timestamp, new Date().toString());
-		response.put(error, ex.getMessage());
 		response.put(status, HttpStatus.NOT_FOUND.name());
-		return new ResponseEntity<>(response,HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 }

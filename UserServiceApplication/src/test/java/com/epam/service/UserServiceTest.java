@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.epam.dto.UserDto;
 import com.epam.entity.User;
-import com.epam.exception.NoUsersException;
 import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 import com.epam.repo.UserRepository;
@@ -105,14 +104,6 @@ class UserServiceTest {
 	void getAllBooksTest() {
 		when(userRepository.findAll()).thenReturn(users);
 		assertEquals(users, userService.fetchAllUsers());
-	}
-
-	@Test
-	void getAllBooksErrorTest() {
-		List<User> emptyBooks = new ArrayList<>();
-		when(userRepository.findAll()).thenReturn(emptyBooks);
-		Throwable exception = assertThrows(NoUsersException.class, () -> userService.fetchAllUsers());
-		assertEquals("No Users", exception.getMessage());
 	}
 
 	@Test

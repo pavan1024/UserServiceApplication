@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.epam.dto.UserDto;
 import com.epam.entity.User;
-import com.epam.exception.NoUsersException;
 import com.epam.exception.UserAlreadyExistsException;
 import com.epam.exception.UserNotFoundException;
 import com.epam.service.UserService;
@@ -28,29 +27,29 @@ public class UserController {
 	private UserService userService;
 
 	@GetMapping
-	public ResponseEntity<List<User>> getAllBooks() throws NoUsersException {
+	public ResponseEntity<List<User>> getAllUsers() {
 		return new ResponseEntity<>(userService.fetchAllUsers(), HttpStatus.OK);
 	}
 
 	@GetMapping("/{username}")
-	public ResponseEntity<User> getBook(@PathVariable String username) throws UserNotFoundException {
+	public ResponseEntity<User> getUser(@PathVariable String username) throws UserNotFoundException {
 		return new ResponseEntity<>(userService.getUser(username), HttpStatus.OK);
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDto> addBook(@RequestBody UserDto userDto) throws UserAlreadyExistsException {
+	public ResponseEntity<UserDto> addUser(@RequestBody UserDto userDto) throws UserAlreadyExistsException {
 		return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{username}")
-	public ResponseEntity<String> deleteBook(@PathVariable String username) throws UserNotFoundException {
+	public ResponseEntity<String> deleteUser(@PathVariable String username) throws UserNotFoundException {
 		return new ResponseEntity<>(userService.deleteUser(username), HttpStatus.NO_CONTENT);
 	}
 
 	@PutMapping("/{username}")
-	public ResponseEntity<UserDto> updateBook(@PathVariable String username, @RequestBody UserDto userDto)
+	public ResponseEntity<UserDto> updateUser(@PathVariable String username, @RequestBody UserDto userDto)
 			throws UserNotFoundException {
-		return new ResponseEntity<>(userService.updateUser(username, userDto), HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(userService.updateUser(username, userDto), HttpStatus.OK);
 	}
 
 }
